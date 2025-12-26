@@ -1,0 +1,1859 @@
+Задача:
+1. Проект с Git (разделен на несколько файлов)
+ 
+Main.java:
+public class Main {
+   public static void main(String[] args) {
+       System.out.println("Hello, World!");
+   }
+}
+ 
+MainTest.java:
+import org.junit.*;
+ 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+ 
+public class MainTest {
+   @Test
+   public void testMain(){
+       assertTrue(true);
+   }
+}
+2. Исправления в чужом проекте (пример)
+ 
+// Пример: исправление бага в расчете площади круга
+public class CircleCalculator {
+   // Было: public double calculateArea(double radius) { return 3.14 * radius * radius; }
+   // Исправлено:
+   public double calculateArea(double radius) {
+       if (radius < 0) {
+           throw new IllegalArgumentException("Radius cannot be negative");
+       }
+       return Math.PI * radius * radius;
+   }
+}
+ 
+3. Сумма двух целых чисел с обработкой исключений
+ 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+ 
+public class SumCalculator {
+   public static void main(String[] args) {
+       Scanner scanner = new Scanner(System.in);
+       int num1 = 0, num2 = 0;
+       boolean validInput = false;
+       
+       while (!validInput) {
+           try {
+               System.out.print("Введите первое целое число: ");
+               num1 = scanner.nextInt();
+               
+               System.out.print("Введите второе целое число: ");
+               num2 = scanner.nextInt();
+               
+               validInput = true;
+               int sum = num1 + num2;
+               System.out.println("Сумма: " + sum);
+               
+           } catch (InputMismatchException e) {
+               System.out.println("Ошибка: введено не целое число. Попробуйте снова.");
+               scanner.nextLine(); // Очистка буфера
+           }
+       }
+       scanner.close();
+   }
+}
+4. Месяцы и дни с обработкой исключений
+ 
+import java.util.Scanner;
+ 
+public class MonthDays {
+   public static void main(String[] args) {
+       String[] months = {"январь", "февраль", "март", "апрель", "май", "июнь",
+                         "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"};
+       int[] dom = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+       
+       Scanner scanner = new Scanner(System.in);
+       
+       try {
+           System.out.print("Введите номер месяца (1-12): ");
+           int monthNumber = scanner.nextInt();
+           
+           if (monthNumber < 1 || monthNumber > 12) {
+               throw new ArrayIndexOutOfBoundsException();
+           }
+           
+           System.out.println("Месяц: " + months[monthNumber - 1]);
+           System.out.println("Количество дней: " + dom[monthNumber - 1]);
+           
+       } catch (ArrayIndexOutOfBoundsException e) {
+           System.out.println("Недопустимое число");
+       } catch (Exception e) {
+           System.out.println("Ошибка ввода");
+       } finally {
+           scanner.close();
+       }
+   }
+}
+5. Ввод числа с проверкой типа
+import java.util.InputMismatchException;
+import java.util.Scanner;
+ 
+public class MonthValidator {
+   public static void main(String[] args) {
+       String[] months = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+                         "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
+       
+       Scanner scanner = new Scanner(System.in);
+       boolean valid = false;
+       int month = 0;
+       
+       while (!valid) {
+           try {
+               System.out.print("Введите номер месяца (1-12): ");
+               month = scanner.nextInt();
+               
+               if (month < 1 || month > 12) {
+                   System.out.println("Число должно быть от 1 до 12");
+               } else {
+                   valid = true;
+                   System.out.println("Месяц: " + months[month - 1]);
+               }
+               
+           } catch (InputMismatchException e) {
+               System.out.println("Ошибка: необходимо ввести целое число");
+               scanner.nextLine(); // Очистка буфера
+           }
+       }
+       scanner.close();
+   }
+}
+ 
+6. Triangle с IllegalTriangleException
+IllegalTriangleException.java
+public class IllegalTriangleException extends Exception {
+   public IllegalTriangleException(String message) {
+       super(message);
+   }
+}
+ 
+Triangle.java
+public class Triangle {
+   private double side1, side2, side3;
+   
+   public Triangle(double side1, double side2, double side3)
+           throws IllegalTriangleException {
+       
+       if (side1 <= 0 || side2 <= 0 || side3 <= 0) {
+           throw new IllegalTriangleException("Все стороны должны быть положительными");
+       }
+       
+       if (side1 + side2 <= side3 ||
+           side1 + side3 <= side2 ||
+           side2 + side3 <= side1) {
+           throw new IllegalTriangleException(
+               "Сумма любых двух сторон должна быть больше третьей стороны");
+       }
+       
+       this.side1 = side1;
+       this.side2 = side2;
+       this.side3 = side3;
+   }
+   
+   // Геттеры
+   public double getSide1() { return side1; }
+   public double getSide2() { return side2; }
+   public double getSide3() { return side3; }
+}
+ 
+Main.java для тестирования
+public class TriangleTest {
+   public static void main(String[] args) {
+       try {
+           Triangle triangle1 = new Triangle(3, 4, 5);
+           System.out.println("Треугольник создан успешно");
+           
+           Triangle triangle2 = new Triangle(1, 1, 3);
+       } catch (IllegalTriangleException e) {
+           System.out.println("Ошибка создания треугольника: " + e.getMessage());
+       }
+   }
+}
+7. Дробь с проверкой знаменателя
+// DivisionByZeroException.java
+public class DivisionByZeroException extends Exception {
+   public DivisionByZeroException(String message) {
+       super(message);
+   }
+}
+ 
+// Fraction.java
+public class Fraction {
+   private int numerator;
+   private int denominator;
+   
+   public Fraction(int numerator, int denominator) throws DivisionByZeroException {
+       if (denominator == 0) {
+           throw new DivisionByZeroException("Знаменатель не может быть равен нулю");
+       }
+       this.numerator = numerator;
+       this.denominator = denominator;
+   }
+   
+   public double getValue() {
+       return (double) numerator / denominator;
+   }
+   
+   @Override
+   public String toString() {
+       return numerator + "/" + denominator;
+   }
+}
+ 
+// FractionTest.java
+public class FractionTest {
+   public static void main(String[] args) {
+       try {
+           Fraction fraction1 = new Fraction(1, 2);
+           System.out.println("Дробь создана: " + fraction1);
+           
+           Fraction fraction2 = new Fraction(3, 0);
+       } catch (DivisionByZeroException e) {
+           System.out.println("Ошибка: " + e.getMessage());
+       }
+   }
+}
+8. Удаление дубликатов из коллекции
+import java.util.ArrayList;
+import java.util.List;
+ 
+public class DuplicateRemover {
+   public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
+       ArrayList<T> result = new ArrayList<>();
+       
+       for (T item : list) {
+           if (!result.contains(item)) {
+               result.add(item);
+           }
+       }
+       
+       return result;
+   }
+   
+   public static void main(String[] args) {
+       ArrayList<String> list = new ArrayList<>();
+       list.add("apple");
+       list.add("banana");
+       list.add("apple");
+       list.add("orange");
+       list.add("banana");
+       
+       ArrayList<String> uniqueList = removeDuplicates(list);
+       System.out.println("Оригинальный список: " + list);
+       System.out.println("Список без дубликатов: " + uniqueList);
+   }
+}
+9. Линейный поиск в массиве
+public class LinearSearch {
+   public static int linearSearch(int[] array, int target) {
+       for (int i = 0; i < array.length; i++) {
+           if (array[i] == target) {
+               return i;
+           }
+       }
+       return -1;
+   }
+   
+   public static void main(String[] args) {
+       int[] numbers = {10, 20, 30, 40, 50};
+       
+       int index1 = linearSearch(numbers, 30);
+       System.out.println("Индекс 30: " + index1); // 2
+       
+       int index2 = linearSearch(numbers, 60);
+       System.out.println("Индекс 60: " + index2); // -1
+   }
+}
+10. Circle с Comparable и поиск наибольшего
+// Circle.java
+public class Circle implements Comparable<Circle> {
+   private double radius;
+   
+   public Circle(double radius) {
+       this.radius = radius;
+   }
+   
+   public double getRadius() {
+       return radius;
+   }
+   
+   public double getArea() {
+       return Math.PI * radius * radius;
+   }
+   
+   @Override
+   public int compareTo(Circle other) {
+       return Double.compare(this.radius, other.radius);
+   }
+   
+   @Override
+   public String toString() {
+       return String.format("Circle(radius=%.2f)", radius);
+   }
+}
+ 
+// CircleFinder.java
+public class CircleFinder {
+   public static Circle findLargestCircle(Circle[] circles) {
+       if (circles == null || circles.length == 0) {
+           return null;
+       }
+       
+       Circle largest = circles[0];
+       for (int i = 1; i < circles.length; i++) {
+           if (circles[i].compareTo(largest) > 0) {
+               largest = circles[i];
+           }
+       }
+       
+       return largest;
+   }
+   
+   public static void main(String[] args) {
+       Circle[] circles = {
+           new Circle(5.0),
+           new Circle(3.0),
+           new Circle(7.0),
+           new Circle(4.5)
+       };
+       
+       Circle largest = findLargestCircle(circles);
+       System.out.println("Самый большой круг: " + largest);
+       System.out.println("Радиус: " + largest.getRadius());
+       System.out.println("Площадь: " + largest.getArea());
+   }
+}
+11. Поиск наибольшего элемента в двумерном массиве с Comparable
+public class MaxIn2DArray {
+   public static <T extends Comparable<T>> T findMax(T[][] matrix) {
+       if (matrix == null || matrix.length == 0) {
+           return null;
+       }
+       
+       T max = matrix[0][0];
+       for (T[] row : matrix) {
+           for (T element : row) {
+               if (element.compareTo(max) > 0) {
+                   max = element;
+               }
+           }
+       }
+       return max;
+   }
+   
+   public static void main(String[] args) {
+       Integer[][] intMatrix = {
+           {1, 5, 3},
+           {9, 2, 8},
+           {4, 7, 6}
+       };
+       
+       Double[][] doubleMatrix = {
+           {1.5, 3.7},
+           {2.8, 4.1},
+           {0.9, 5.3}
+       };
+       
+       String[][] stringMatrix = {
+           {"apple", "banana"},
+           {"orange", "grape"}
+       };
+       
+       System.out.println("Максимум в intMatrix: " + findMax(intMatrix));
+       System.out.println("Максимум в doubleMatrix: " + findMax(doubleMatrix));
+       System.out.println("Максимум в stringMatrix: " + findMax(stringMatrix));
+   }
+}
+ 
+12. Обобщенный метод сортировки массива
+import java.util.Arrays;
+ 
+public class GenericSorter {
+   public static <T extends Comparable<T>> void sortArray(T[] array) {
+       for (int i = 0; i < array.length - 1; i++) {
+           for (int j = 0; j < array.length - i - 1; j++) {
+               if (array[j].compareTo(array[j + 1]) > 0) {
+                   T temp = array[j];
+                   array[j] = array[j + 1];
+                   array[j + 1] = temp;
+               }
+           }
+       }
+   }
+   
+   public static void main(String[] args) {
+       // Сортировка массива целых чисел
+       Integer[] intArray = {5, 2, 8, 1, 9};
+       System.out.println("До сортировки (int): " + Arrays.toString(intArray));
+       sortArray(intArray);
+       System.out.println("После сортировки (int): " + Arrays.toString(intArray));
+       
+       // Сортировка массива double
+       Double[] doubleArray = {3.5, 1.2, 4.8, 2.1};
+       System.out.println("\nДо сортировки (double): " + Arrays.toString(doubleArray));
+       sortArray(doubleArray);
+       System.out.println("После сортировки (double): " + Arrays.toString(doubleArray));
+       
+       // Сортировка массива символов
+       Character[] charArray = {'d', 'a', 'c', 'b'};
+       System.out.println("\nДо сортировки (char): " + Arrays.toString(charArray));
+       sortArray(charArray);
+       System.out.println("После сортировки (char): " + Arrays.toString(charArray));
+       
+       // Сортировка массива строк
+       String[] stringArray = {"banana", "apple", "date", "cherry"};
+       System.out.println("\nДо сортировки (string): " + Arrays.toString(stringArray));
+       sortArray(stringArray);
+       System.out.println("После сортировки (string): " + Arrays.toString(stringArray));
+   }
+}
+13. Класс Cat
+import java.util.Random;
+ 
+public class Cat {
+   private void sleep() {
+       System.out.println("Sleep");
+   }
+   
+   private void meow() {
+       System.out.println("Meow");
+   }
+   
+   private void eat() {
+       System.out.println("Eat");
+   }
+   
+   public void status() {
+       Random random = new Random();
+       int action = random.nextInt(3); // 0, 1, 2
+       
+       switch (action) {
+           case 0:
+               sleep();
+               break;
+           case 1:
+               meow();
+               break;
+           case 2:
+               eat();
+               break;
+       }
+   }
+   
+   public static void main(String[] args) {
+       Cat cat = new Cat();
+       
+       System.out.println("Статусы кота:");
+       for (int i = 0; i < 5; i++) {
+           cat.status();
+       }
+   }
+}
+14. Класс Student
+import java.util.Arrays;
+ 
+public class Student {
+   private String name;
+   private String surname;
+   private int[] grades;
+   private int gradeCount;
+   
+   public Student(String name, String surname) {
+       this.name = name;
+       this.surname = surname;
+       this.grades = new int[10];
+       this.gradeCount = 0;
+   }
+   
+   // Геттеры и сеттеры для name
+   public String getName() {
+       return name;
+   }
+   
+   public void setName(String name) {
+       this.name = name;
+   }
+   
+   // Геттеры и сеттеры для surname
+   public String getSurname() {
+       return surname;
+   }
+   
+   public void setSurname(String surname) {
+       this.surname = surname;
+   }
+   
+   // Геттеры и сеттеры для grades
+   public int[] getGrades() {
+       return Arrays.copyOf(grades, gradeCount);
+   }
+   
+   public void setGrades(int[] newGrades) {
+       if (newGrades.length <= 10) {
+           this.grades = Arrays.copyOf(newGrades, 10);
+           this.gradeCount = newGrades.length;
+       }
+   }
+   
+   // Добавление новой оценки
+   public void addGrade(int grade) {
+       if (gradeCount < 10) {
+           grades[gradeCount] = grade;
+           gradeCount++;
+       } else {
+           // Сдвигаем оценки влево
+           for (int i = 0; i < 9; i++) {
+               grades[i] = grades[i + 1];
+           }
+           grades[9] = grade;
+       }
+   }
+   
+   // Расчет среднего балла
+   public double getAverageGrade() {
+       if (gradeCount == 0) {
+           return 0.0;
+       }
+       
+       int sum = 0;
+       for (int i = 0; i < gradeCount; i++) {
+           sum += grades[i];
+       }
+       return (double) sum / gradeCount;
+   }
+   
+   @Override
+   public String toString() {
+       return String.format("%s %s, Средний балл: %.2f, Оценки: %s",
+           name, surname, getAverageGrade(),
+           Arrays.toString(getGrades()));
+   }
+   
+   public static void main(String[] args) {
+       Student student = new Student("Иван", "Иванов");
+       
+       student.addGrade(5);
+       student.addGrade(4);
+       student.addGrade(5);
+       student.addGrade(3);
+       
+       System.out.println(student);
+       
+       // Добавляем еще оценки (больше 10)
+       for (int i = 0; i < 15; i++) {
+           student.addGrade(4);
+       }
+       
+       System.out.println("После добавления 15 оценок:");
+       System.out.println(student);
+   }
+}
+15. Student и StudentService
+import java.util.Arrays;
+import java.util.Comparator;
+ 
+// Класс Student (аналогичный предыдущему, но без main)
+class Student {
+   private String name;
+   private String surname;
+   private int[] grades;
+   private int gradeCount;
+   
+   public Student(String name, String surname) {
+       this.name = name;
+       this.surname = surname;
+       this.grades = new int[10];
+       this.gradeCount = 0;
+   }
+   
+   public String getName() { return name; }
+   public void setName(String name) { this.name = name; }
+   
+   public String getSurname() { return surname; }
+   public void setSurname(String surname) { this.surname = surname; }
+   
+   public int[] getGrades() {
+       return Arrays.copyOf(grades, gradeCount);
+   }
+   
+   public void addGrade(int grade) {
+       if (gradeCount < 10) {
+           grades[gradeCount] = grade;
+           gradeCount++;
+       } else {
+           for (int i = 0; i < 9; i++) {
+               grades[i] = grades[i + 1];
+           }
+           grades[9] = grade;
+       }
+   }
+   
+   public double getAverageGrade() {
+       if (gradeCount == 0) return 0.0;
+       int sum = 0;
+       for (int i = 0; i < gradeCount; i++) {
+           sum += grades[i];
+       }
+       return (double) sum / gradeCount;
+   }
+   
+   @Override
+   public String toString() {
+       return String.format("%s %s (%.2f)", surname, name, getAverageGrade());
+   }
+}
+ 
+// Класс StudentService
+class StudentService {
+   
+   // Находит лучшего студента
+   public Student bestStudent(Student[] students) {
+       if (students == null || students.length == 0) {
+           return null;
+       }
+       
+       Student best = students[0];
+       for (Student student : students) {
+           if (student.getAverageGrade() > best.getAverageGrade()) {
+               best = student;
+           }
+       }
+       return best;
+   }
+   
+   // Сортирует студентов по фамилии
+   public void sortBySurname(Student[] students) {
+       Arrays.sort(students, new Comparator<Student>() {
+           @Override
+           public int compare(Student s1, Student s2) {
+               return s1.getSurname().compareToIgnoreCase(s2.getSurname());
+           }
+       });
+   }
+}
+ 
+// Main класс для тестирования
+public class StudentSystem {
+   public static void main(String[] args) {
+       // Создаем студентов
+       Student[] students = new Student[5];
+       students[0] = new Student("Анна", "Петрова");
+       students[1] = new Student("Иван", "Сидоров");
+       students[2] = new Student("Мария", "Иванова");
+       students[3] = new Student("Петр", "Алексеев");
+       students[4] = new Student("Ольга", "Васильева");
+       
+       // Добавляем оценки
+       students[0].addGrade(5); students[0].addGrade(4); students[0].addGrade(5);
+       students[1].addGrade(3); students[1].addGrade(4); students[1].addGrade(4);
+       students[2].addGrade(5); students[2].addGrade(5); students[2].addGrade(5);
+       students[3].addGrade(4); students[3].addGrade(4); students[3].addGrade(3);
+       students[4].addGrade(5); students[4].addGrade(4); students[4].addGrade(5);
+       
+       StudentService service = new StudentService();
+       
+       // Находим лучшего студента
+       Student best = service.bestStudent(students);
+       System.out.println("Лучший студент: " + best);
+       
+       // Сортируем по фамилии
+       System.out.println("\nДо сортировки:");
+       for (Student s : students) {
+           System.out.println(s);
+       }
+       
+       service.sortBySurname(students);
+       
+       System.out.println("\nПосле сортировки по фамилии:");
+       for (Student s : students) {
+           System.out.println(s);
+       }
+   }
+}
+16. Анализ текстового файла
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+ 
+public class FileAnalyzer {
+   public static void analyzeFile(String filePath) {
+       try {
+           Path path = Paths.get(filePath);
+           List<String> lines = Files.readAllLines(path);
+           
+           // Подсчет строк
+           int lineCount = lines.size();
+           System.out.println("Общее количество строк: " + lineCount);
+           
+           // Поиск самых длинных строк
+           int maxLength = 0;
+           for (String line : lines) {
+               if (line.length() > maxLength) {
+                   maxLength = line.length();
+               }
+           }
+           
+           System.out.println("Максимальная длина строки: " + maxLength);
+           System.out.println("Самые длинные строки:");
+           
+           for (String line : lines) {
+               if (line.length() == maxLength) {
+                   System.out.println(line);
+               }
+           }
+           
+       } catch (IOException e) {
+           System.err.println("Ошибка при чтении файла: " + e.getMessage());
+       }
+   }
+   
+   public static void main(String[] args) {
+       if (args.length != 1) {
+           System.out.println("Использование: java FileAnalyzer <путь_к_файлу>");
+           System.out.println("Пример: java FileAnalyzer test.txt");
+           return;
+       }
+       
+       analyzeFile(args[0]);
+   }
+}
+17. Объединение двух файлов
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+ 
+public class FileMerger {
+   public static void mergeFiles(String file1Path, String file2Path, String outputPath) {
+       try {
+           // Чтение первого файла
+           Path path1 = Paths.get(file1Path);
+           List<String> content1 = Files.readAllLines(path1);
+           
+           // Чтение второго файла
+           Path path2 = Paths.get(file2Path);
+           List<String> content2 = Files.readAllLines(path2);
+           
+           // Создание/очистка выходного файла
+           Path output = Paths.get(outputPath);
+           Files.deleteIfExists(output);
+           Files.createFile(output);
+           
+           // Запись содержимого первого файла
+           Files.write(output, content1, StandardOpenOption.WRITE);
+           
+           // Добавление содержимого второго файла
+           Files.write(output, content2, StandardOpenOption.APPEND);
+           
+           System.out.println("Файлы успешно объединены в: " + outputPath);
+           
+       } catch (IOException e) {
+           System.err.println("Ошибка: " + e.getMessage());
+       }
+   }
+   
+   public static void main(String[] args) {
+       if (args.length != 3) {
+           System.out.println("Использование: java FileMerger <файл1> <файл2> <выходной_файл>");
+           System.out.println("Пример: java FileMerger file1.txt file2.txt merged.txt");
+           return;
+       }
+       
+       mergeFiles(args[0], args[1], args[2]);
+   }
+}
+18. Функция сложения с тестами (JUnit)
+// Calculator.java
+public class Calculator {
+   public static int add(int a, int b) {
+       return a + b;
+   }
+}
+ 
+// CalculatorTest.java (JUnit 4)
+import org.junit.Test;
+import static org.junit.Assert.*;
+ 
+public class CalculatorTest {
+   
+   @Test
+   public void testAddPositiveNumbers() {
+       assertEquals(5, Calculator.add(2, 3));
+   }
+   
+   @Test
+   public void testAddNegativeNumbers() {
+       assertEquals(-5, Calculator.add(-2, -3));
+   }
+   
+   @Test
+   public void testAddPositiveAndNegative() {
+       assertEquals(0, Calculator.add(5, -5));
+   }
+   
+   @Test
+   public void testAddZero() {
+       assertEquals(7, Calculator.add(7, 0));
+       assertEquals(7, Calculator.add(0, 7));
+   }
+   
+   @Test
+   public void testAddLargeNumbers() {
+       assertEquals(2000000, Calculator.add(1000000, 1000000));
+   }
+}
+```
+ 
+## 19. Функция поиска максимума с тестами
+```java
+// ArrayUtils.java
+public class ArrayUtils {
+   public static int findMax(int[] array) {
+       if (array == null || array.length == 0) {
+           throw new IllegalArgumentException("Массив не может быть пустым");
+       }
+       
+       int max = array[0];
+       for (int i = 1; i < array.length; i++) {
+           if (array[i] > max) {
+               max = array[i];
+           }
+       }
+       return max;
+   }
+}
+ 
+// ArrayUtilsTest.java
+import org.junit.Test;
+import static org.junit.Assert.*;
+ 
+public class ArrayUtilsTest {
+   
+   @Test
+   public void testFindMaxPositiveNumbers() {
+       int[] array = {1, 5, 3, 9, 2};
+       assertEquals(9, ArrayUtils.findMax(array));
+   }
+   
+   @Test
+   public void testFindMaxNegativeNumbers() {
+       int[] array = {-5, -1, -10, -3};
+       assertEquals(-1, ArrayUtils.findMax(array));
+   }
+   
+   @Test
+   public void testFindMaxMixedNumbers() {
+       int[] array = {-5, 0, 10, -3, 7};
+       assertEquals(10, ArrayUtils.findMax(array));
+   }
+   
+   @Test
+   public void testFindMaxSingleElement() {
+       int[] array = {42};
+       assertEquals(42, ArrayUtils.findMax(array));
+   }
+   
+   @Test(expected = IllegalArgumentException.class)
+   public void testFindMaxEmptyArray() {
+       int[] array = {};
+       ArrayUtils.findMax(array);
+   }
+}
+20. Функция умножения с тестами
+// Multiplier.java
+public class Multiplier {
+   public static int multiply(int a, int b) {
+       return a * b;
+   }
+   
+   public static double multiply(double a, double b) {
+       return a * b;
+   }
+}
+ 
+// MultiplierTest.java
+import org.junit.Test;
+import static org.junit.Assert.*;
+ 
+public class MultiplierTest {
+   
+   @Test
+   public void testMultiplyPositiveIntegers() {
+       assertEquals(6, Multiplier.multiply(2, 3));
+   }
+   
+   @Test
+   public void testMultiplyNegativeIntegers() {
+       assertEquals(6, Multiplier.multiply(-2, -3));
+       assertEquals(-6, Multiplier.multiply(2, -3));
+   }
+   
+   @Test
+   public void testMultiplyByZero() {
+       assertEquals(0, Multiplier.multiply(5, 0));
+       assertEquals(0, Multiplier.multiply(0, 5));
+   }
+   
+   @Test
+   public void testMultiplyLargeNumbers() {
+       assertEquals(1000000, Multiplier.multiply(1000, 1000));
+   }
+   
+   @Test
+   public void testMultiplyDoubles() {
+       assertEquals(6.25, Multiplier.multiply(2.5, 2.5), 0.001);
+   }
+}
+ 
+## Примечания по выполнению:
+ 
+1. **Для задач 13-15** (создание репозиториев):
+  - Создайте локальную папку для проекта
+  - Инициализируйте Git репозиторий: `git init`
+  - Добавьте файлы: `git add .`
+  - Сделайте коммит: `git commit -m "Initial commit"`
+  - Создайте репозиторий на GitHub/GitLab
+  - Добавьте remote: `git remote add origin <URL>`
+  - Запушьте: `git push -u origin main`
+ 
+2. **Для тестов (18-20)**:
+  - Убедитесь, что у вас есть JUnit в classpath
+  - Можно использовать JUnit 4 или JUnit 5
+  - Для Maven добавьте зависимость:
+    ```xml
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
+    ```
+ 
+3. **Для работы с файлами (16-17)**:
+  - Убедитесь, что файлы существуют по указанным путям
+  - Обрабатывайте исключения IOException
+  - Используйте try-with-resources для автоматического закрытия потоков
+21. Вот простой код для каждой задачи на Java:
+ 
+## 1. Функция нахождения максимального из трех чисел
+ 
+```java
+public class MaxOfThree {
+   
+   public static int findMax(int a, int b, int c) {
+       int max = a;
+       if (b > max) {
+           max = b;
+       }
+       if (c > max) {
+           max = c;
+       }
+       return max;
+   }
+   
+   // Модульные тесты
+   public static void main(String[] args) {
+       // Тест 1: Все числа разные
+       System.out.println("Тест 1: " + (findMax(1, 2, 3) == 3 ? "Пройден" : "Не пройден"));
+       
+       // Тест 2: Все числа одинаковые
+       System.out.println("Тест 2: " + (findMax(5, 5, 5) == 5 ? "Пройден" : "Не пройден"));
+       
+       // Тест 3: Максимальное первое число
+       System.out.println("Тест 3: " + (findMax(10, 5, 3) == 10 ? "Пройден" : "Не пройден"));
+       
+       // Тест 4: Максимальное второе число
+       System.out.println("Тест 4: " + (findMax(1, 7, 2) == 7 ? "Пройден" : "Не пройден"));
+       
+       // Тест 5: Отрицательные числа
+       System.out.println("Тест 5: " + (findMax(-5, -1, -10) == -1 ? "Пройден" : "Не пройден"));
+   }
+}
+```
+ 
+## 2. Функция определения количества букв в строке
+ 
+```java
+public class CountLetters {
+   
+   public static int countLetters(String str) {
+       int count = 0;
+       for (int i = 0; i < str.length(); i++) {
+           char ch = str.charAt(i);
+           if (Character.isLetter(ch)) {
+               count++;
+           }
+       }
+       return count;
+   }
+   
+   // Модульные тесты
+   public static void main(String[] args) {
+       // Тест 1: Только буквы
+       System.out.println("Тест 1: " + (countLetters("HelloWorld") == 10 ? "Пройден" : "Не пройден"));
+       
+       // Тест 2: Буквы и цифры
+       System.out.println("Тест 2: " + (countLetters("Hello123") == 5 ? "Пройден" : "Не пройден"));
+       
+       // Тест 3: Пустая строка
+       System.out.println("Тест 3: " + (countLetters("") == 0 ? "Пройден" : "Не пройден"));
+       
+       // Тест 4: Спецсимволы и пробелы
+       System.out.println("Тест 4: " + (countLetters("Hello, World!") == 10 ? "Пройден" : "Не пройден"));
+       
+       // Тест 5: Кириллица и латиница
+       System.out.println("Тест 5: " + (countLetters("ПриветHello") == 11 ? "Пройден" : "Не пройден"));
+   }
+}
+```
+ 
+## 3. Функция определения количества цифр в строке
+ 
+```java
+public class CountDigits {
+   
+   public static int countDigits(String str) {
+       int count = 0;
+       for (int i = 0; i < str.length(); i++) {
+           char ch = str.charAt(i);
+           if (Character.isDigit(ch)) {
+               count++;
+           }
+       }
+       return count;
+   }
+   
+   // Модульные тесты
+   public static void main(String[] args) {
+       // Тест 1: Только цифры
+       System.out.println("Тест 1: " + (countDigits("1234567890") == 10 ? "Пройден" : "Не пройден"));
+       
+       // Тест 2: Цифры и буквы
+       System.out.println("Тест 2: " + (countDigits("abc123def456") == 6 ? "Пройден" : "Не пройден"));
+       
+       // Тест 3: Пустая строка
+       System.out.println("Тест 3: " + (countDigits("") == 0 ? "Пройден" : "Не пройден"));
+       
+       // Тест 4: Разные символы
+       System.out.println("Тест 4: " + (countDigits("Phone: +7 (123) 456-78-90") == 11 ? "Пройден" : "Не пройден"));
+       
+       // Тест 5: Нет цифр
+       System.out.println("Тест 5: " + (countDigits("Hello World!") == 0 ? "Пройден" : "Не пройден"));
+   }
+}
+```
+ 
+## 4. Функция определения количества специальных символов в строке
+ 
+```java
+public class CountSpecialChars {
+   
+   public static int countSpecialChars(String str) {
+       int count = 0;
+       for (int i = 0; i < str.length(); i++) {
+           char ch = str.charAt(i);
+           // Спецсимвол - это не буква и не цифра
+           if (!Character.isLetter(ch) && !Character.isDigit(ch) && !Character.isWhitespace(ch)) {
+               count++;
+           }
+       }
+       return count;
+   }
+   
+   // Модульные тесты
+   public static void main(String[] args) {
+       // Тест 1: Только спецсимволы
+       System.out.println("Тест 1: " + (countSpecialChars("!@#$%^&*()") == 10 ? "Пройден" : "Не пройден"));
+       
+       // Тест 2: Смешанная строка
+       System.out.println("Тест 2: " + (countSpecialChars("Hello, World! How are you?") == 3 ? "Пройден" : "Не пройден"));
+       
+       // Тест 3: Пустая строка
+       System.out.println("Тест 3: " + (countSpecialChars("") == 0 ? "Пройден" : "Не пройден"));
+       
+       // Тест 4: Цифры и пробелы (не считаются спецсимволами)
+       System.out.println("Тест 4: " + (countSpecialChars("123 456 789") == 0 ? "Пройден" : "Не пройден"));
+       
+       // Тест 5: Email с спецсимволами
+       System.out.println("Тест 5: " + (countSpecialChars("user@example.com") == 2 ? "Пройден" : "Не пройден"));
+   }
+}
+25. Разработать класс для хранения данных о пользователе туристического агентства.
+User.java
+public class User {
+   private int id;
+   private String firstName;
+   private String lastName;
+   private String email;
+   private String phone;
+   private String passportNumber;
+ 
+   public User(int id, String firstName, String lastName, String email,
+               String phone, String passportNumber) {
+       this.id = id;
+       this.firstName = firstName;
+       this.lastName = lastName;
+       this.email = email;
+       this.phone = phone;
+       this.passportNumber = passportNumber;
+   }
+ 
+   public String getFullName() {
+       return firstName + " " + lastName;
+   }
+ 
+   public void displayInfo() {
+       System.out.println("ID: " + id);
+       System.out.println("Имя: " + getFullName());
+       System.out.println("Email: " + email);
+       System.out.println("Телефон: " + phone);
+       System.out.println("Паспорт: " + passportNumber);
+   }
+}
+TravelAgencyApp.java
+import java.util.ArrayList;
+import java.util.Scanner;
+ 
+public class TravelAgencyApp {
+   private static ArrayList<User> users = new ArrayList<>();
+   private static Scanner scanner = new Scanner(System.in);
+ 
+   public static void main(String[] args) {
+       System.out.println("Туристическое агентство\n");
+ 
+       while (true) {
+           showMenu();
+           int choice = scanner.nextInt();
+           scanner.nextLine(); // очистка буфера
+ 
+           switch (choice) {
+               case 1 -> addUser();
+               case 2 -> showUsers();
+               case 3 -> System.out.println("Выход из программы");
+               default -> System.out.println("Неверный выбор");
+           }
+ 
+           if (choice == 4) break;
+       }
+ 
+       scanner.close();
+   }
+ 
+   private static void showMenu() {
+       System.out.println("\n1. Добавить клиента");
+       System.out.println("2. Показать всех клиентов");
+       System.out.println("3. Выход");
+       System.out.print("Выберите: ");
+   }
+ 
+   private static void addUser() {
+       System.out.print("Имя: ");
+       String firstName = scanner.nextLine();
+ 
+       System.out.print("Фамилия: ");
+       String lastName = scanner.nextLine();
+ 
+       System.out.print("Email: ");
+       String email = scanner.nextLine();
+ 
+       System.out.print("Телефон: ");
+       String phone = scanner.nextLine();
+ 
+       System.out.print("Паспорт: ");
+       String passport = scanner.nextLine();
+ 
+       User user = new User(users.size() + 1, firstName, lastName, email, phone, passport);
+       users.add(user);
+ 
+       System.out.println("Клиент добавлен. ID");
+   }
+ 
+   private static void showUsers() {
+       if (users.isEmpty()) {
+           System.out.println("Нет клиентов");
+           return;
+       }
+ 
+       System.out.println("\nСписок клиентов:");
+       for (User user : users) {
+           user.displayInfo();
+           System.out.println();
+       }
+   }
+}
+Вот простые реализации для каждого задания на Java:
+
+ 
+
+## 26. Магазин ювелирных украшений
+
+ 
+
+```java
+
+// Customer.java
+
+public class Customer {
+
+   private String name;
+
+   private String email;
+
+   private double totalPurchases;
+
+   private String membershipLevel;
+
+   
+
+   public Customer(String name, String email) {
+
+       this.name = name;
+
+       this.email = email;
+
+       this.totalPurchases = 0.0;
+
+       this.membershipLevel = "Regular";
+
+   }
+
+   
+
+   public void makePurchase(double amount) {
+
+       totalPurchases += amount;
+
+       updateMembership();
+
+       System.out.println(name + " совершил покупку на " + amount + " руб.");
+
+   }
+
+   
+
+   private void updateMembership() {
+
+       if (totalPurchases >= 100000) {
+
+           membershipLevel = "VIP";
+
+       } else if (totalPurchases >= 50000) {
+
+           membershipLevel = "Gold";
+
+       } else if (totalPurchases >= 10000) {
+
+           membershipLevel = "Silver";
+
+       }
+
+   }
+
+   
+
+   public void displayInfo() {
+
+       System.out.println("Покупатель: " + name);
+
+       System.out.println("Email: " + email);
+
+       System.out.println("Общая сумма покупок: " + totalPurchases + " руб.");
+
+       System.out.println("Уровень членства: " + membershipLevel);
+
+   }
+
+}
+
+ 
+
+// JewelryStoreApp.java
+
+public class JewelryStoreApp {
+
+   public static void main(String[] args) {
+
+       Customer customer1 = new Customer("Иван Иванов", "ivan@email.com");
+
+       Customer customer2 = new Customer("Мария Петрова", "maria@email.com");
+
+       
+
+       customer1.makePurchase(15000);
+
+       customer1.makePurchase(35000);
+
+       customer1.displayInfo();
+
+       
+
+       System.out.println();
+
+       
+
+       customer2.makePurchase(80000);
+
+       customer2.displayInfo();
+
+   }
+
+}
+
+```
+
+ 
+
+## 27. Магазин спортивной одежды
+
+ 
+
+```java
+
+// SportsCustomer.java
+
+public class SportsCustomer {
+
+   private String name;
+
+   private int age;
+
+   private String favoriteSport;
+
+   private int loyaltyPoints;
+
+   private String size;
+
+   
+
+   public SportsCustomer(String name, int age, String favoriteSport, String size) {
+
+       this.name = name;
+
+       this.age = age;
+
+       this.favoriteSport = favoriteSport;
+
+       this.size = size;
+
+       this.loyaltyPoints = 0;
+
+   }
+
+   
+
+   public void addPoints(int points) {
+
+       loyaltyPoints += points;
+
+       System.out.println(name + " получил " + points + " бонусных баллов");
+
+   }
+
+   
+
+   public void usePoints(int points) {
+
+       if (points <= loyaltyPoints) {
+
+           loyaltyPoints -= points;
+
+           System.out.println("Использовано " + points + " баллов");
+
+       } else {
+
+           System.out.println("Недостаточно баллов!");
+
+       }
+
+   }
+
+   
+
+   public void displayInfo() {
+
+       System.out.println("Покупатель: " + name);
+
+       System.out.println("Возраст: " + age);
+
+       System.out.println("Любимый спорт: " + favoriteSport);
+
+       System.out.println("Размер: " + size);
+
+       System.out.println("Бонусные баллы: " + loyaltyPoints);
+
+   }
+
+}
+
+ 
+
+// SportsStoreApp.java
+
+public class SportsStoreApp {
+
+   public static void main(String[] args) {
+
+       SportsCustomer customer1 = new SportsCustomer("Алексей", 25, "Футбол", "L");
+
+       SportsCustomer customer2 = new SportsCustomer("Елена", 30, "Йога", "M");
+
+       
+
+       customer1.addPoints(100);
+
+       customer1.addPoints(50);
+
+       customer1.usePoints(70);
+
+       customer1.displayInfo();
+
+       
+
+       System.out.println();
+
+       
+
+       customer2.addPoints(200);
+
+       customer2.displayInfo();
+
+   }
+
+}
+
+```
+
+ 
+
+## 28. Строительный магазин
+
+ 
+
+```java
+
+// ConstructionProduct.java
+
+public class ConstructionProduct {
+
+   private String name;
+
+   private String category;
+
+   private double price;
+
+   private int quantity;
+
+   private String supplier;
+
+   
+
+   public ConstructionProduct(String name, String category, double price, int quantity, String supplier) {
+
+       this.name = name;
+
+       this.category = category;
+
+       this.price = price;
+
+       this.quantity = quantity;
+
+       this.supplier = supplier;
+
+   }
+
+   
+
+   public void sell(int amount) {
+
+       if (amount <= quantity) {
+
+           quantity -= amount;
+
+           System.out.println("Продано " + amount + " единиц товара: " + name);
+
+           System.out.println("Выручка: " + (amount * price) + " руб.");
+
+       } else {
+
+           System.out.println("Недостаточно товара на складе!");
+
+       }
+
+   }
+
+   
+
+   public void restock(int amount) {
+
+       quantity += amount;
+
+       System.out.println("Пополнено " + amount + " единиц товара: " + name);
+
+   }
+
+   
+
+   public double getTotalValue() {
+
+       return quantity * price;
+
+   }
+
+   
+
+   public void displayInfo() {
+
+       System.out.println("Товар: " + name);
+
+       System.out.println("Категория: " + category);
+
+       System.out.println("Цена: " + price + " руб.");
+
+       System.out.println("Количество: " + quantity);
+
+       System.out.println("Поставщик: " + supplier);
+
+       System.out.println("Общая стоимость: " + getTotalValue() + " руб.");
+
+   }
+
+}
+
+ 
+
+// ConstructionStoreApp.java
+
+public class ConstructionStoreApp {
+
+   public static void main(String[] args) {
+
+       ConstructionProduct product1 = new ConstructionProduct("Цемент", "Строительные смеси", 450, 100, "Лафарж");
+
+       ConstructionProduct product2 = new ConstructionProduct("Кирпич", "Стеновые материалы", 25, 5000, "Браер");
+
+       
+
+       product1.displayInfo();
+
+       System.out.println();
+
+       
+
+       product1.sell(20);
+
+       product1.restock(50);
+
+       product1.displayInfo();
+
+       
+
+       System.out.println("\n---\n");
+
+       
+
+       product2.sell(1000);
+
+       product2.displayInfo();
+
+   }
+
+}
+
+```
+
+ 
+
+## 29. Приют для животных
+
+ 
+
+```java
+
+// ShelterAnimal.java
+
+public class ShelterAnimal {
+
+   private String name;
+
+   private String species;
+
+   private int age;
+
+   private String healthStatus;
+
+   private boolean vaccinated;
+
+   private String arrivalDate;
+
+   
+
+   public ShelterAnimal(String name, String species, int age, String arrivalDate) {
+
+       this.name = name;
+
+       this.species = species;
+
+       this.age = age;
+
+       this.arrivalDate = arrivalDate;
+
+       this.healthStatus = "Проверяется";
+
+       this.vaccinated = false;
+
+   }
+
+   
+
+   public void vaccinate() {
+
+       vaccinated = true;
+
+       System.out.println(name + " вакцинирован(а)");
+
+   }
+
+   
+
+   public void updateHealthStatus(String status) {
+
+       healthStatus = status;
+
+       System.out.println("Состояние здоровья " + name + " обновлено: " + status);
+
+   }
+
+   
+
+   public boolean isReadyForAdoption() {
+
+       return vaccinated && healthStatus.equals("Здоров");
+
+   }
+
+   
+
+   public void displayInfo() {
+
+       System.out.println("Имя: " + name);
+
+       System.out.println("Вид: " + species);
+
+       System.out.println("Возраст: " + age + " лет");
+
+       System.out.println("Дата поступления: " + arrivalDate);
+
+       System.out.println("Состояние здоровья: " + healthStatus);
+
+       System.out.println("Вакцинирован: " + (vaccinated ? "Да" : "Нет"));
+
+       System.out.println("Готов к усыновлению: " + (isReadyForAdoption() ? "Да" : "Нет"));
+
+   }
+
+}
+
+ 
+
+// AnimalShelterApp.java
+
+public class AnimalShelterApp {
+
+   public static void main(String[] args) {
+
+       ShelterAnimal animal1 = new ShelterAnimal("Барсик", "Кот", 2, "2024-01-15");
+
+       ShelterAnimal animal2 = new ShelterAnimal("Шарик", "Собака", 4, "2024-01-10");
+
+       
+
+       animal1.updateHealthStatus("Здоров");
+
+       animal1.vaccinate();
+
+       animal1.displayInfo();
+
+       
+
+       System.out.println("\n---\n");
+
+       
+
+       animal2.updateHealthStatus("На лечении");
+
+       animal2.displayInfo();
+
+       
+
+       System.out.println("\n---\n");
+
+       System.out.println("Барсик готов к усыновлению: " + animal1.isReadyForAdoption());
+
+       System.out.println("Шарик готов к усыновлению: " + animal2.isReadyForAdoption());
+
+   }
+
+}
+
+```
+
+ 
+
+## 30. Таксопарк
+
+ 
+
+```java
+
+// TaxiCar.java
+
+public class TaxiCar {
+
+   private String model;
+
+   private String licensePlate;
+
+   private int year;
+
+   private double mileage;
+
+   private boolean inService;
+
+   private String driverName;
+
+   
+
+   public TaxiCar(String model, String licensePlate, int year, String driverName) {
+
+       this.model = model;
+
+       this.licensePlate = licensePlate;
+
+       this.year = year;
+
+       this.driverName = driverName;
+
+       this.mileage = 0;
+
+       this.inService = true;
+
+   }
+
+   
+
+   public void addTrip(double distance) {
+
+       mileage += distance;
+
+       System.out.println("Автомобиль " + licensePlate + " выполнил поездку на " + distance + " км");
+
+   }
+
+   
+
+   public void setServiceStatus(boolean status) {
+
+       inService = status;
+
+       String statusText = status ? "в строю" : "на обслуживании";
+
+       System.out.println("Автомобиль " + licensePlate + " теперь " + statusText);
+
+   }
+
+   
+
+   public boolean needsMaintenance() {
+
+       return mileage >= 10000;
+
+   }
+
+   
+
+   public void displayInfo() {
+
+       System.out.println("Модель: " + model);
+
+       System.out.println("Госномер: " + licensePlate);
+
+       System.out.println("Год выпуска: " + year);
+
+       System.out.println("Пробег: " + mileage + " км");
+
+       System.out.println("Водитель: " + driverName);
+
+       System.out.println("В строю: " + (inService ? "Да" : "Нет"));
+
+       System.out.println("Требуется ТО: " + (needsMaintenance() ? "Да" : "Нет"));
+
+   }
+
+}
+
+ 
+
+// TaxiParkApp.java
+
+public class TaxiParkApp {
+
+   public static void main(String[] args) {
+
+       TaxiCar car1 = new TaxiCar("Toyota Camry", "А123ВС77", 2020, "Иван Сидоров");
+
+       TaxiCar car2 = new TaxiCar("Kia Rio", "В456ОР77", 2021, "Петр Иванов");
+
+       
+
+       car1.addTrip(150);
+
+       car1.addTrip(200);
+
+       car1.addTrip(9850); // Итого 10200 км
+
+       
+
+       car2.addTrip(5000);
+
+       
+
+       System.out.println("=== Информация об автомобиле 1 ===");
+
+       car1.displayInfo();
+
+       
+
+       System.out.println("\n=== Информация об автомобиле 2 ===");
+
+       car2.displayInfo();
+
+       
+
+       System.out.println("\n=== Действия ===");
+
+       if (car1.needsMaintenance()) {
+
+           car1.setServiceStatus(false);
+
+           System.out.println("Автомобиль 1 отправлен на ТО");
+
+       }
+
+   }
+
+}
